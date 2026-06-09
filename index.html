@@ -332,7 +332,13 @@ function render(){
  const offset=getOffset();
 
  const latest=allData[allData.length-1];
+const previous=allData[allData.length-2];
 
+const delta =
+  latest.absolute - previous.absolute;
+
+const mmPerHr =
+  delta * 1000 * 4;
  const latestTime=new Date(latest.timestamp);
 
  const latestLevel=latest.absolute+offset;
@@ -340,12 +346,37 @@ function render(){
  document.getElementById('currentLevel').textContent=
  latestLevel.toFixed(3)+' m';
 
- const trend=trendStrength();
-
  const trendEl=document.getElementById('trend');
+const rateEl=document.getElementById('rate');
 
- trendEl.textContent=trend[0];
- trendEl.className='trend '+trend[1];
+if(mmPerHr > 1){
+
+   trendEl.textContent='▲ Rising';
+   trendEl.className='trend green';
+
+}
+else if(mmPerHr < -1){
+
+   trendEl.textContent='▼ Falling';
+   trendEl.className='trend red';
+
+}
+else{
+
+   trendEl.textContent='► Stable';
+   trendEl.className='trend grey';
+
+}
+
+let colour='grey';
+
+if(mmPerHr > 1) colour='green';
+if(mmPerHr < -1) colour='red';
+
+rateEl.innerHTML=
+'<span class="'+colour+'"><strong>'+
+Math.abs(mmPerHr).toFixed(0)+
+' mm/hr</strong></span>';
 
  document.getElementById('updated').textContent=
  latest.timestamp;
@@ -357,8 +388,17 @@ function render(){
 
  const ageEl=document.getElementById('dataAge');
 
+ if(ageHours < 1){
+
  ageEl.textContent=
- ageHours.toFixed(1)+' hours';
+ Math.round(ageHours*60)+' minutes old';
+
+}else{
+
+ ageEl.textContent=
+ ageHours.toFixed(1)+' hours old';
+
+}
 
  if(ageHours<1){
   ageEl.className='green';
@@ -488,20 +528,20 @@ pointHoverRadius:10,
     tension:0.2
    }]
   },
+  
   options:{
    responsive:true,
    maintainAspectRatio:false,
+
    plugins:{
-    legend:{display:true}
+      legend:{display:true},
+      tooltip:{enabled:true}
    },
-   plugins:{
- legend:{display:true},
- tooltip:{enabled:true}
-}
+
    scales:{
-    x:{display:true}
+      x:{display:true}
    }
-  }
+}
  });
 
 }
