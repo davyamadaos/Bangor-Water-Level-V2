@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+d<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -129,6 +129,10 @@ a{
 
 <div id="currentLevel" class="level">
 Loading...
+</div>
+
+<div style="font-size:1rem;color:#666;">
+River Stage
 </div>
 
 <div id="sparkline" class="sparkline"></div>
@@ -478,7 +482,9 @@ function render(){
     label:'Water Level (m)',
     data:values,
     pointRadius:(ctx)=>
-      ctx.dataIndex===values.length-1?5:0,
+ctx.dataIndex===values.length-1?7:0,
+
+pointHoverRadius:10,
     tension:0.2
    }]
   },
@@ -488,6 +494,10 @@ function render(){
    plugins:{
     legend:{display:true}
    },
+   plugins:{
+ legend:{display:true},
+ tooltip:{enabled:true}
+}
    scales:{
     x:{display:true}
    }
